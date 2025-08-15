@@ -93,3 +93,4 @@ source github_backend_env/bin/activate && python -m pytest app/tests/test_functi
 # Time spent
 
 - around 4-5 hrs
+- adding tests and persisting data took more time than expected
