@@ -87,9 +87,5 @@ source github_backend_env/bin/activate && python -m pytest app/tests/test_functi
 # Considerations
 
 - search button placed to that api hits are limited
-
-# Future Improvements
-
-- skeleton loading
-- pagination
-- when user comes back to the page, the search results are not shown, make it persist
+- making data persistent when user comes back from detail page
+- pagination added
