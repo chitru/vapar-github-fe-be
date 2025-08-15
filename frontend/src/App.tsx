@@ -1,19 +1,28 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import axios from "axios";
 import Loading from "@/components/loading";
 import { site_url } from "@/lib/config";
-import { Eye, Star } from "lucide-react";
+import { Eye, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router";
-import type { Repo } from "@/lib/types";
+import { useSearchStore } from "@/lib/store";
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const reposPerPage = 5;
 
-  const [repos, setRepos] = useState<Repo[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {
+    repos,
+    searchTerm,
+    currentPage,
+    loading,
+    error,
+    setRepos,
+    setSearchTerm,
+    setCurrentPage,
+    setLoading,
+    setError,
+    resetPage,
+  } = useSearchStore();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,6 +32,7 @@ function App() {
 
     if (searchTerm) {
       setLoading(true);
+      resetPage(); // resetting to 1 on new search
       try {
         const response = await axios.get(`${site_url}/repos`, {
           params: {
@@ -48,6 +58,20 @@ function App() {
     } else {
       setError("Please enter a search term");
     }
+  };
+
+  // calculating pagination
+  const indexOfLastRepo = currentPage * reposPerPage;
+  const indexOfFirstRepo = indexOfLastRepo - reposPerPage;
+  const currentRepos = repos.slice(indexOfFirstRepo, indexOfLastRepo);
+  const totalPages = Math.ceil(repos.length / reposPerPage);
+
+  const goToPreviousPage = () => {
+    setCurrentPage(Math.max(currentPage - 1, 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage(Math.min(currentPage + 1, totalPages));
   };
 
   return (
@@ -85,7 +109,9 @@ function App() {
           <div className="flex flex-col gap-4 max-w-md mx-auto">
             {loading && <Loading />}
             {error && <p>{error}</p>}
-            {repos.map((repo: Repo) => (
+
+            {/* Repository list */}
+            {currentRepos.map((repo) => (
               <div key={repo.full_name} className="flex flex-col gap-2">
                 <Link
                   className="flex flex-col gap-2 p-4 hover:cursor-pointer hover:bg-gray-50 border rounded-xl border-gray-300"
@@ -93,7 +119,7 @@ function App() {
                 >
                   <div className="flex flex-row gap-3 items-center">
                     <img
-                      src={repo.avatar_url}
+                      src={repo.avatar_url || ""}
                       alt="avatar"
                       className="w-10 h-10 rounded-full object-cover"
                     />
@@ -116,6 +142,43 @@ function App() {
                 </Link>
               </div>
             ))}
+
+            {/* Pagination starts here */}
+            {repos.length > 0 && (
+              <div className="flex items-center justify-between mt-6 pb-16">
+                <div className="flex items-center gap-4">
+                  <div className="text-sm text-gray-500">
+                    Showing {indexOfFirstRepo + 1}-
+                    {Math.min(indexOfLastRepo, repos.length)} of {repos.length}{" "}
+                    results
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={goToPreviousPage}
+                    disabled={currentPage === 1}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <span className="text-sm px-3 py-2">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    onClick={goToNextPage}
+                    disabled={currentPage === totalPages}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+            {/* Pagination ends here */}
           </div>
         </div>
       </div>
