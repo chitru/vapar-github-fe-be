@@ -137,7 +137,7 @@ class TestRepoDetails:
             "open_issues_count": 10,
             "language": "Python",
             "license": "MIT License",  # Note: license is a string, not an object
-            "owner": {"repos_url": "https://api.github.com/users/testuser/repos"}
+            "owner": {"html_url": "https://github.com/testuser"}
         }
         mock_get.return_value = mock_response
 
@@ -153,7 +153,7 @@ class TestRepoDetails:
         assert result["open_issues_count"] == 10
         assert result["language"] == "Python"
         assert result["license"]["name"] == "MIT License"
-        assert result["repos_url"] == "https://api.github.com/users/testuser/repos"
+        assert result["repos_url"] == "https://github.com/testuser"
 
         # Verify the request was made correctly
         mock_get.assert_called_once()
@@ -207,7 +207,7 @@ class TestRepoDetails:
             "open_issues_count": 10,
             "language": "Python",
             "license": None,
-            "owner": {"repos_url": "https://api.github.com/users/testuser/repos"}
+            "owner": {"html_url": "https://github.com/testuser"}
         }
         mock_get.return_value = mock_response
 

@@ -21,6 +21,7 @@ function App() {
     setCurrentPage,
     setLoading,
     setError,
+    clearSearch,
     resetPage,
   } = useSearchStore();
 
@@ -60,7 +61,16 @@ function App() {
     }
   };
 
-  // calculating pagination
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (!value.trim()) {
+      clearSearch();
+    }
+  };
+
+  // Pagination
   const indexOfLastRepo = currentPage * reposPerPage;
   const indexOfFirstRepo = indexOfLastRepo - reposPerPage;
   const currentRepos = repos.slice(indexOfFirstRepo, indexOfLastRepo);
@@ -95,7 +105,7 @@ function App() {
               name="search"
               placeholder="Search"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleInputChange}
             />
             <Button
               type="submit"
@@ -146,12 +156,10 @@ function App() {
             {/* Pagination starts here */}
             {repos.length > 0 && (
               <div className="flex items-center justify-between mt-6 pb-16">
-                <div className="flex items-center gap-4">
-                  <div className="text-sm text-gray-500">
-                    Showing {indexOfFirstRepo + 1}-
-                    {Math.min(indexOfLastRepo, repos.length)} of {repos.length}{" "}
-                    results
-                  </div>
+                <div className="text-sm text-gray-500">
+                  Showing {indexOfFirstRepo + 1}-
+                  {Math.min(indexOfLastRepo, repos.length)} of {repos.length}{" "}
+                  results
                 </div>
                 <div className="flex items-center gap-2">
                   <Button

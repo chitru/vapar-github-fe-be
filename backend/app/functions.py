@@ -77,7 +77,7 @@ def repo_details(owner: str, repo: str):
             "open_issues_count": data["open_issues_count"],
             "language": data["language"],
             "license": {"name": data["license"]} if data["license"] else None,
-            "repos_url": data["owner"]["repos_url"],
+            "repos_url": data["owner"]["html_url"],
         }
         return modified_data
     except Exception as e:
