@@ -2,7 +2,7 @@
 
 A simple frontend that allows users to search for repositories on GitHub and view details about a specific repository. It uses backend API built on top of FastAPI to fetch the data. Github free API is used to fetch the data and no authentication is required.
 
-# Setup and installation
+# How to run application
 
 ## Prerequisites
 
@@ -89,3 +89,7 @@ source github_backend_env/bin/activate && python -m pytest app/tests/test_functi
 - search button placed to that api hits are limited
 - making data persistent when user comes back from detail page
 - pagination added
+
+# Time spent
+
+- around 4-5 hrs
